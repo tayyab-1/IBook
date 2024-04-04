@@ -259,7 +259,7 @@ class DocumentViews(GenericAPIView):
             pusher_client.trigger(
                 "doc-channel", "doc-update", {"docId": serialized.data["id"]}
             )
-            return Response(serialzed.data, status=status.HTTP_200_OK)
+            return Response(serialized.data, status=status.HTTP_200_OK)
         except:
             return Response(
                 {"detail": "error in updating documents"},
