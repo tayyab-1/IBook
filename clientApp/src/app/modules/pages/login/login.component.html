@@ -1,0 +1,29 @@
+<div class="light-bg box-height">
+    <mat-card class="" style="margin: 0 auto;width: 30%;">
+        <form [formGroup]="loginForm" (ngSubmit)="submit()" class="bg-white p-5" style="margin-top: 20%;">
+            <p class="h5">Login</p>
+            <input
+                [nzStatus]="(loginForm.controls['username'].invalid && (loginForm.controls['username'].touched || clickedOnSubmit)) ? 'error':''"
+                autofocus nz-input placeholder="Username" class="w-100 my-2 py-1" formControlName="username" />
+            <br>
+            <nz-input-group class="w-100 my-2 py-1" [nzSuffix]="suffixTemplate"
+                [nzStatus]="(loginForm.controls['password'].invalid && (loginForm.controls['password'].touched || clickedOnSubmit)) ? 'error':''">
+                <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="Password"
+                    formControlName="password" />
+            </nz-input-group>
+            <ng-template #suffixTemplate>
+                <span nz-icon style="cursor: pointer;" [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                    (click)="passwordVisible = !passwordVisible"></span>
+            </ng-template>
+            <br>
+            <button nz-button class="btn btn-primary btn-block my-2 d-flex align-items-center justify-content-center"
+                type="submit" [nzLoading]="isConfirmLoading">Login</button>
+            <div class="my-3 row">
+                <div class="col-9"></div>
+                <div class="col-3">
+                    <a class="link-primary" routerLink="/register">Register</a>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+</div>

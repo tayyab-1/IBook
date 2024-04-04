@@ -1,0 +1,13 @@
+# Ignore files created by Visual Studio Code
+.vscode/
+
+# Ignore .DS_Store files on macOS
+.DS_Store
+
+# Ignore user-specific files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*

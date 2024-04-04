@@ -1,0 +1,91 @@
+<nz-layout class="app-layout">
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="22vw" nzBreakpoint="md" [nzTrigger]="null">
+        <div class="sidebar-logo d-flex justify-content-between align-items-center">
+            <h1>{{doc.title}}</h1>
+            <button class="btn btn-success mr-2" style="margin-left: 20px;" (click)="previewRequest()">
+                Preview
+            </button>
+        </div>
+
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" style="color: white;background-color: #001529;"
+            class="example-tree">
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                <div id="parent">
+                    <app-section [data]="node" (populateEvent)="populateDocument(true)"></app-section>
+                </div>
+            </mat-tree-node>
+            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+                <div class="mat-tree-node">
+                    <button mat-icon-button matTreeNodeToggle class="colors-side no-border">
+                        <mat-icon class="mat-icon-rtl-mirror">
+                            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                        </mat-icon>
+                    </button>
+                    <app-section [data]="node" (populateEvent)="populateDocument(true)"></app-section>
+                </div>
+                <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+                    <ng-container matTreeNodeOutlet></ng-container>
+                </div>
+            </mat-nested-tree-node>
+        </mat-tree>
+
+        <button nz-button class="mt-4 ml-2" nzType="primary" (click)="parentCreateClick()">
+            Create New Section
+        </button>
+    </nz-sider>
+    <nz-layout>
+        <nz-content>
+            <div class="inner-content" id="document">
+                <app-text (populateEvent)="populateDocument(true)"></app-text>
+            </div>
+        </nz-content>
+    </nz-layout>
+    <nz-sider class="menu-sidebar" style="background-color:aliceblue;" nzCollapsible nzWidth="17vw" nzBreakpoint="md"
+        [nzTrigger]="null">
+        <div class="sidebar-logo">
+            <h1>Lookup Word Meanings</h1>
+        </div>
+
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton" [nzSuffix]="textAreaClearTpl" style="padding: 10px;">
+            <input type="text" [(ngModel)]="searchKeyword"
+                (ngModelChange)="documentService.searchKeyword$.next(searchKeyword); searchNotFound=false" nz-input
+                placeholder="Enter Text" />
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+            <button nz-button nzType="primary" nzSearch><span nz-icon nzType="search"></span></button>
+        </ng-template>
+        <ng-template #textAreaClearTpl>
+            <span *ngIf="searchKeyword.length" nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                (click)="searchKeyword = ''; wordDefinition.word=''">
+            </span>
+        </ng-template>
+
+        <div class="d-flex align-items-center justify-content-start">
+            <p class="m-2" style="font-size: 18px; font-weight: 500;">Definitions: </p>
+            <span *ngIf="searchingWord" nz-icon nzType="loading" nzTheme="outline"></span>
+        </div>
+
+        <div *ngIf="wordDefinition.word.length && !searchingWord" style="max-height: 75vh; overflow: scroll;">
+            <div class="ml-2 mt-2 mr-2" *ngFor="let def of wordDefinition.definitions; let i=index">
+                <i style="color: #4943ab; margin-bottom: 5px;">{{def.partOfSpeech}}</i>
+                <p style="font-size: 14px;">{{i+1 + ': '+def.definition}}</p>
+            </div>
+        </div>
+        <p *ngIf="searchNotFound && searchKeyword.length" style="margin: 10px; color: rgba(255, 0, 0, 0.463);">
+            No Definition Found!</p>
+    </nz-sider>
+</nz-layout>
+
+<nz-modal [(nzVisible)]="createNewParent" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null"
+    (nzOnCancel)="handleCancel()">
+    <ng-template #modalTitle>
+        New Section
+    </ng-template>
+
+    <ng-template #modalContent>
+        <input autofocus nz-input placeholder="Title" type="text" class="w-100 my-2 py-1" [(ngModel)]="name" />
+        <br>
+        <button nz-button class="btn btn-primary btn-block my-2 d-flex align-items-center justify-content-center"
+            type="submit" (click)="createNewSection()" [nzLoading]="loading">Save</button>
+    </ng-template>
+</nz-modal>

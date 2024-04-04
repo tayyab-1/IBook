@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-center align-items-center">
+    <button nz-button nzType="link" style="text-decoration: underline;"
+        (click)="sectionSelected()"><span>{{data.name}}</span></button>
+    <button nz-button nzType="text" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+        <i nz-icon nzType="more" class="colors-side" nzTheme="outline"></i>
+    </button>
+</div>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+        <li nz-menu-item>
+            <button nz-button nzType="text" (click)="addChildClick()">
+                Add Sub Section
+            </button>
+        </li>
+        <li nz-menu-item>
+            <button nz-button nzType="text" (click)="editClick()">
+                Edit Title
+            </button>
+        </li>
+        <li nz-menu-item>
+            <button nz-button nzType="text" (click)="deleteSectionConfirm()">
+                Delete
+            </button>
+        </li>
+    </ul>
+</nz-dropdown-menu>
+
+<nz-modal [(nzVisible)]="addSubSection || editSectionTitle" [nzTitle]="modalTitle" [nzContent]="modalContent"
+    [nzFooter]="null" (nzOnCancel)="handleCancel()">
+    <ng-template #modalTitle>
+        <span>{{addSubSection ? 'New Sub Section':'Edit Title'}}</span>
+    </ng-template>
+
+    <ng-template #modalContent>
+        <input autofocus nz-input placeholder="Title" type="text" class="w-100 my-2 py-1" [(ngModel)]="name" />
+        <br>
+        <button nz-button class="btn btn-primary btn-block my-2 d-flex align-items-center justify-content-center"
+            type="submit" (click)="editSectionTitle ? editSection() : createNewSection()"
+            [nzLoading]="loading">Save</button>
+    </ng-template>
+</nz-modal>
